@@ -1,0 +1,116 @@
+/* MathDinosaurGame.css */
+
+.math-dinosaur-game {
+    text-align: center;
+    padding: 20px;
+    font-family: 'Comic Sans MS', cursive, sans-serif;
+  }
+
+  .game-title {
+    color: #4a4a4a;
+    font-size: 2.5em;
+    margin-bottom: 20px;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+  }
+
+  .balloon {
+    position: absolute;
+    animation: float linear infinite;
+    animation-direction: alternate;
+    width: 80px;  /* Increased size */
+    height: 100px;  /* Increased size */
+    font-size: 24px;  /* Larger font for numbers */
+  }
+
+  .game-area {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 20px;
+  }
+
+  .reset-button {
+    font-size: 18px;
+    padding: 10px 20px;
+    margin: 10px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+
+  .reset-button:hover {
+    background-color: #45a049;
+  }
+
+  /* Floating animation for balloons */
+  @keyframes float {
+    0% { transform: translateY(100%); }
+    100% { transform: translateY(-100%); }
+  }
+
+  /* Treasure chest styles */
+  .treasure-chest {
+    width: 150px;
+    text-align: center;
+    cursor: pointer;
+  }
+
+  .chest {
+    width: 120px;
+    height: 90px;
+    margin: 0 auto;
+    position: relative;
+  }
+
+  .chest-lid {
+    width: 100%;
+    height: 45px;
+    background-color: #8B4513;
+    border-radius: 60px 60px 0 0;
+    position: absolute;
+    top: 0;
+    transition: transform 0.3s;
+  }
+
+  .chest-body {
+    width: 100%;
+    height: 60px;
+    background-color: #A0522D;
+    border-radius: 0 0 15px 15px;
+    position: absolute;
+    bottom: 0;
+  }
+
+  .treasure-chest:hover .chest-lid {
+    transform: rotateX(60deg);
+  }
+
+  /* Dinosaur styles */
+  .dinosaur {
+    transition: all 0.5s ease;
+  }
+
+  /* Rewards window */
+  .rewards-window {
+    position: fixed;
+    top: 50%;
+    right: 20px;
+    transform: translateY(-50%);
+    background-color: rgba(255, 255, 255, 0.9);
+    border: 2px solid #4CAF50;
+    border-radius: 10px;
+    padding: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    max-width: 200px;
+    max-height: 300px;
+    overflow-y: auto;
+  }
+
+  .reward-sticker {
+    font-size: 30px;
+    margin: 5px;
+  }
