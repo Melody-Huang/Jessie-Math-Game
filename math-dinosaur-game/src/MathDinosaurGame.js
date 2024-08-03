@@ -1,6 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import Balloon from './components/Balloon';
-import TreasureChest from './components/TreasureChest';
 import './MathDinosaurGame.css';
 
 import eggImage from './images/egg.png';
@@ -193,3 +191,34 @@ const MathDinosaurGame = () => {
 };
 
 export default MathDinosaurGame;
+
+const Balloon = ({ number, onClick, style }) => (
+  <div
+    onClick={onClick}
+    className="balloon"
+    style={{
+      width: '60px',
+      height: '80px',
+      borderRadius: '50%',
+      backgroundColor: `hsl(${Math.random() * 360}, 70%, 80%)`,
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      cursor: 'pointer',
+      ...style
+    }}
+  >
+    {number}
+  </div>
+);
+
+const TreasureChest = ({ title, content, onClick }) => (
+  <div className="treasure-chest" onClick={onClick}>
+    <h3>{title}</h3>
+    <div className="chest">
+      <div className="chest-lid"></div>
+      <div className="chest-body"></div>
+    </div>
+    <p>{content}</p>
+  </div>
+);
