@@ -1,6 +1,5 @@
 import React from 'react';
 import MathDinosaurGame from './MathDinosaurGame';
-import './styles.css';
 
 function App() {
   return (

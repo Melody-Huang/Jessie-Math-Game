@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Balloon from './components/Balloon';
 import TreasureChest from './components/TreasureChest';
-import './styles.css';
 import './MathDinosaurGame.css';
 
 import eggImage from './images/egg.png';
@@ -42,20 +41,43 @@ const generateMathProblem = () => {
 
 const generateBalloonPositions = () => {
   const positions = [];
+  const gridSize = 3; // 3x3 grid
+  const cellWidth = 100 / gridSize;
+  const cellHeight = 100 / gridSize;
+  const balloonSize = 100; // Approximate size of balloon in pixels
+  const containerWidth = 400; // Approximate width of container in pixels
+  const containerHeight = 300; // Approximate height of container in pixels
+
+  // Convert balloon size to percentage of container
+  const balloonWidthPercent = (balloonSize / containerWidth) * 100;
+  const balloonHeightPercent = (balloonSize / containerHeight) * 100;
+
+  const usedCells = [];
+
   for (let i = 0; i < 5; i++) {
-    let newPosition;
+    let cell;
     do {
-      newPosition = {
-        left: `${Math.random() * 80}%`,
-        top: `${Math.random() * 60}%`,
-        animationDuration: `${15 + Math.random() * 10}s`,
-        animationDelay: `${-Math.random() * 15}s`,
+      cell = {
+        row: Math.floor(Math.random() * gridSize),
+        col: Math.floor(Math.random() * gridSize)
       };
-    } while (positions.some(pos =>
-      Math.abs(parseFloat(pos.left) - parseFloat(newPosition.left)) < 20 &&
-      Math.abs(parseFloat(pos.top) - parseFloat(newPosition.top)) < 20
-    ));
-    positions.push(newPosition);
+    } while (usedCells.some(usedCell => usedCell.row === cell.row && usedCell.col === cell.col));
+
+    usedCells.push(cell);
+
+    let left = cell.col * cellWidth + Math.random() * (cellWidth - balloonWidthPercent);
+    let top = cell.row * cellHeight + Math.random() * (cellHeight - balloonHeightPercent);
+
+    // Ensure balloons stay within container bounds
+    left = Math.max(0, Math.min(left, 100 - balloonWidthPercent));
+    top = Math.max(0, Math.min(top, 100 - balloonHeightPercent));
+
+    positions.push({
+      left: `${left}%`,
+      top: `${top}%`,
+      animationDuration: `${15 + Math.random() * 10}s`,
+      animationDelay: `${-Math.random() * 15}s`,
+    });
   }
   return positions;
 };
