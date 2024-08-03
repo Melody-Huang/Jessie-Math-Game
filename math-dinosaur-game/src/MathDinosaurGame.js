@@ -212,13 +212,9 @@ const Balloon = ({ number, onClick, style }) => (
   </div>
 );
 
-const TreasureChest = ({ title, content, onClick }) => (
-  <div className="treasure-chest" onClick={onClick}>
+const TreasureChest = ({ title, content }) => (
+  <div className="treasure-chest">
     <h3>{title}</h3>
-    <div className="chest">
-      <div className="chest-lid"></div>
-      <div className="chest-body"></div>
-    </div>
     <p>{content}</p>
   </div>
 );
