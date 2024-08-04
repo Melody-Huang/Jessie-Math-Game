@@ -6,6 +6,8 @@ import hatchedImage from './images/hatched.png';
 import babyImage from './images/baby.png';
 import adultImage from './images/adult.png';
 
+const ANIMATION_DURATION = 2000;
+
 const generateMathProblem = () => {
   const operations = ['+', '-', '*', '/'];
   const operation = operations[Math.floor(Math.random() * operations.length)];
@@ -80,6 +82,8 @@ const MathDinosaurGame = () => {
   const [rewards, setRewards] = useState([]);
   const [balloons, setBalloons] = useState([]);
   const [showRewards, setShowRewards] = useState(false);
+  const [graduatingDino, setGraduatingDino] = useState(null);
+  const [newEgg, setNewEgg] = useState(null);
 
   useEffect(() => {
     generateNewProblem();
@@ -133,10 +137,18 @@ const MathDinosaurGame = () => {
         setGameState('adult');
         setScore(0);
       } else if (gameState === 'adult' && score + 1 >= 3) {
-        setRewards(prev => [...prev, 'adult']);
-        setEggs(prev => prev + 1);
-        setGameState('egg');
-        setScore(0);
+        setGraduatingDino({ top: '50%', left: '50%' });
+        setTimeout(() => {
+          setRewards(prev => [...prev, 'adult']);
+          setGraduatingDino(null);
+          setNewEgg({ top: '100%', left: '50%' });
+          setTimeout(() => {
+            setNewEgg(null);
+            setEggs(prev => prev + 1);
+            setGameState('egg');
+            setScore(0);
+          }, ANIMATION_DURATION);
+        }, ANIMATION_DURATION);
       }
     } else {
       if (gameState !== 'egg') {
@@ -193,15 +205,37 @@ const MathDinosaurGame = () => {
             style={{ left: balloon.left, top: balloon.top, backgroundColor: balloon.color }}
           />
         ))}
+        {graduatingDino && (
+          <div
+            className="graduating-dino"
+            style={{
+              backgroundImage: `url(${adultImage})`,
+              top: graduatingDino.top,
+              left: graduatingDino.left
+            }}
+          />
+        )}
+        {newEgg && (
+          <div
+            className="new-egg"
+            style={{
+              backgroundImage: `url(${eggImage})`,
+              top: newEgg.top,
+              left: newEgg.left
+            }}
+          />
+        )}
       </div>
       <div className="bottom-container">
-        <TreasureChest title="Egg Nest" content={`${eggs} egg${eggs !== 1 ? 's' : ''}`} />
+        <div className="treasure-chest nest-chest">
+          <h3>Egg Nest</h3>
+          <p>{eggs} egg{eggs !== 1 ? 's' : ''}</p>
+        </div>
         <button className="reset-button" onClick={resetGame}>Reset Game</button>
-        <TreasureChest
-          title="Rewards"
-          content={`${rewards.length} dragon${rewards.length !== 1 ? 's' : ''}`}
-          onClick={() => setShowRewards(!showRewards)}
-        />
+        <div className="treasure-chest rewards-chest">
+          <h3>Rewards</h3>
+          <p>{rewards.length} dragon{rewards.length !== 1 ? 's' : ''}</p>
+        </div>
       </div>
       {showRewards && (
         <div className="rewards-window">
