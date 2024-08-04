@@ -37,47 +37,37 @@ const generateMathProblem = () => {
   return { problem: `${num1} ${operation} ${num2}`, result };
 };
 
-const generateBalloonPositions = () => {
-  const positions = [];
-  const gridSize = 3; // 3x3 grid
-  const cellWidth = 100 / gridSize;
-  const cellHeight = 100 / gridSize;
-  const balloonSize = 100; // Approximate size of balloon in pixels
-  const containerWidth = 400; // Approximate width of container in pixels
-  const containerHeight = 300; // Approximate height of container in pixels
+const generateBalloon = (containerWidth, containerHeight, balloonSize, isCorrect, correctAnswer) => {
+  const left = Math.random() * (containerWidth - balloonSize);
+  const top = Math.random() * (containerHeight - balloonSize);
+  const speed = 0.5 + Math.random() * 2; // Random speed between 0.5 and 2.5
+  const direction = Math.random() < 0.5 ? -1 : 1; // Random direction (left or right)
+  const number = isCorrect ? correctAnswer : Math.floor(Math.random() * 20) + 1;
+  const color = `hsl(${Math.random() * 360}, 70%, 80%)`;
 
-  // Convert balloon size to percentage of container
-  const balloonWidthPercent = (balloonSize / containerWidth) * 100;
-  const balloonHeightPercent = (balloonSize / containerHeight) * 100;
+  return {
+    left: `${left}%`,
+    top: `${top}%`,
+    speed,
+    direction,
+    number,
+    color,
+  };
+};
 
-  const usedCells = [];
+const generateBalloons = (correctAnswer) => {
+  const containerWidth = 100; // Container width in percentage
+  const containerHeight = 100; // Container height in percentage
+  const balloonSize = 8; // Balloon size in vh
+
+  const balloons = [];
+  const correctIndex = Math.floor(Math.random() * 5);
 
   for (let i = 0; i < 5; i++) {
-    let cell;
-    do {
-      cell = {
-        row: Math.floor(Math.random() * gridSize),
-        col: Math.floor(Math.random() * gridSize)
-      };
-    } while (usedCells.some(usedCell => usedCell.row === cell.row && usedCell.col === cell.col));
-
-    usedCells.push(cell);
-
-    let left = cell.col * cellWidth + Math.random() * (cellWidth - balloonWidthPercent);
-    let top = cell.row * cellHeight + Math.random() * (cellHeight - balloonHeightPercent);
-
-    // Ensure balloons stay within container bounds
-    left = Math.max(0, Math.min(left, 100 - balloonWidthPercent));
-    top = Math.max(0, Math.min(top, 100 - balloonHeightPercent));
-
-    positions.push({
-      left: `${left}%`,
-      top: `${top}%`,
-      animationDuration: `${15 + Math.random() * 10}s`,
-      animationDelay: `${-Math.random() * 15}s`,
-    });
+    balloons.push(generateBalloon(containerWidth, containerHeight, balloonSize, i === correctIndex, correctAnswer));
   }
-  return positions;
+
+  return balloons;
 };
 
 const MathDinosaurGame = () => {
@@ -86,16 +76,32 @@ const MathDinosaurGame = () => {
   const [gameState, setGameState] = useState('egg');
   const [eggs, setEggs] = useState(1);
   const [rewards, setRewards] = useState([]);
-  const [balloonPositions, setBalloonPositions] = useState(generateBalloonPositions());
+  const [balloons, setBalloons] = useState([]);
   const [showRewards, setShowRewards] = useState(false);
 
   useEffect(() => {
     generateNewProblem();
+    const intervalId = setInterval(updateBalloonPositions, 50); // Update positions every 50ms
+    return () => clearInterval(intervalId);
   }, []);
 
+  const updateBalloonPositions = () => {
+    setBalloons(prevBalloons =>
+      prevBalloons.map(balloon => {
+        let newLeft = parseFloat(balloon.left) + (balloon.speed * balloon.direction * 0.1);
+        if (newLeft < 0 || newLeft > 92) { // 92 is 100 - balloonSize
+          balloon.direction *= -1; // Reverse direction when hitting the edge
+          newLeft = Math.max(0, Math.min(newLeft, 92));
+        }
+        return { ...balloon, left: `${newLeft}%` };
+      })
+    );
+  };
+
   const generateNewProblem = () => {
-    setProblem(generateMathProblem());
-    setBalloonPositions(generateBalloonPositions());
+    const newProblem = generateMathProblem();
+    setProblem(newProblem);
+    setBalloons(generateBalloons(newProblem.result));
   };
 
   const handleAnswer = (userAnswer) => {
@@ -139,7 +145,7 @@ const MathDinosaurGame = () => {
   };
 
   const getDinosaurImage = () => {
-    switch(gameState) {
+    switch (gameState) {
       case 'egg': return eggImage;
       case 'hatched': return hatchedImage;
       case 'baby': return babyImage;
@@ -159,12 +165,12 @@ const MathDinosaurGame = () => {
           </div>
           <img src={getDinosaurImage()} alt={gameState} className="dinosaur-image" />
           <div className="balloons-container">
-            {balloonPositions.map((position, index) => (
+          {balloons.map((balloon, index) => (
               <Balloon
                 key={index}
-                number={index === 0 ? problem.result : Math.floor(Math.random() * 20) + 1}
-                onClick={() => handleAnswer(index === 0 ? problem.result : Math.floor(Math.random() * 20) + 1)}
-                style={position}
+                number={balloon.number}
+                onClick={() => handleAnswer(balloon.number)}
+                style={{ left: balloon.left, top: balloon.top, backgroundColor: balloon.color }}
               />
             ))}
           </div>
