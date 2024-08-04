@@ -66,27 +66,28 @@ body, html {
   justify-content: space-between;
   align-items: center;
   width: 100%;
+  padding: 0 2vw; /* Add some padding to prevent chests from touching the edges */
 }
 
 .treasure-chest {
-  width: 15vw;
-  height: 15vw;
+  width: 10vw; /* Reduced from 15vw */
+  height: 10vw; /* Reduced from 15vw */
   background: url('./images/TreasureChest.png') no-repeat center/contain;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
   align-items: center;
   text-align: center;
-  font-size: 1.5vh;
+  font-size: 1.2vh; /* Slightly reduced font size */
   color: #FFD700;
   text-shadow: 1px 1px 1px #000;
 }
 
 .treasure-chest h3 {
   margin: 0;
-  padding: 0.5vh;
+  padding: 0.3vh; /* Slightly reduced padding */
   background: rgba(0, 0, 0, 0.5);
-  border-radius: 5px;
+  border-radius: 3px; /* Slightly reduced border radius */
 }
 
 .reset-button {
