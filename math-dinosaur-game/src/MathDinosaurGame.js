@@ -37,13 +37,13 @@ const generateMathProblem = () => {
   return { problem: `${num1} ${operation} ${num2}`, result };
 };
 
-const generateBalloon = (containerWidth, containerHeight, balloonSize, isCorrect, correctAnswer) => {
-  const left = Math.random() * (containerWidth - balloonSize);
-  const top = Math.random() * (containerHeight - balloonSize);
-  const speed = 0.5 + Math.random() * 2; // Random speed between 0.5 and 2.5
-  const direction = Math.random() < 0.5 ? -1 : 1; // Random direction (left or right)
+const generateBalloon = (containerWidth, containerHeight, balloonWidth, balloonHeight, isCorrect, correctAnswer) => {
+  const left = Math.random() * (containerWidth - balloonWidth);
+  const top = Math.random() * (containerHeight - balloonHeight);
+  const speed = 0.5 + Math.random() * 1.5; // Slightly reduced max speed
+  const direction = Math.random() < 0.5 ? -1 : 1;
   const number = isCorrect ? correctAnswer : Math.floor(Math.random() * 20) + 1;
-  const color = `hsl(${Math.random() * 360}, 70%, 80%)`;
+  const color = `hsl(${Math.random() * 360}, 80%, 75%)`; // Brighter colors
 
   return {
     left: `${left}%`,
@@ -56,19 +56,21 @@ const generateBalloon = (containerWidth, containerHeight, balloonSize, isCorrect
 };
 
 const generateBalloons = (correctAnswer) => {
-  const containerWidth = 100; // Container width in percentage
-  const containerHeight = 100; // Container height in percentage
-  const balloonSize = 8; // Balloon size in vh
+  const containerWidth = 100;
+  const containerHeight = 100;
+  const balloonWidth = 12; // Increased width
+  const balloonHeight = 15; // Slightly taller than wide for oval shape
 
   const balloons = [];
   const correctIndex = Math.floor(Math.random() * 5);
 
   for (let i = 0; i < 5; i++) {
-    balloons.push(generateBalloon(containerWidth, containerHeight, balloonSize, i === correctIndex, correctAnswer));
+    balloons.push(generateBalloon(containerWidth, containerHeight, balloonWidth, balloonHeight, i === correctIndex, correctAnswer));
   }
 
   return balloons;
 };
+
 
 const MathDinosaurGame = () => {
   const [problem, setProblem] = useState(generateMathProblem());
@@ -85,15 +87,29 @@ const MathDinosaurGame = () => {
     return () => clearInterval(intervalId);
   }, []);
 
+
   const updateBalloonPositions = () => {
     setBalloons(prevBalloons =>
       prevBalloons.map(balloon => {
         let newLeft = parseFloat(balloon.left) + (balloon.speed * balloon.direction * 0.1);
-        if (newLeft < 0 || newLeft > 92) { // 92 is 100 - balloonSize
-          balloon.direction *= -1; // Reverse direction when hitting the edge
-          newLeft = Math.max(0, Math.min(newLeft, 92));
+        let newTop = parseFloat(balloon.top);
+
+        // Bounce off the sides
+        if (newLeft < 0 || newLeft > 90) { // 90 is 100 - balloonSize
+          balloon.direction *= -1; // Reverse direction
+          newLeft = Math.max(0, Math.min(newLeft, 90));
         }
-        return { ...balloon, left: `${newLeft}%` };
+
+        // Bounce off the top and bottom
+        if (newTop < 0 || newTop > 90) {
+          balloon.verticalDirection = (balloon.verticalDirection || 1) * -1; // Reverse vertical direction
+          newTop = Math.max(0, Math.min(newTop, 90));
+        }
+
+        // Add slight vertical movement
+        newTop += balloon.verticalDirection * 0.05;
+
+        return { ...balloon, left: `${newLeft}%`, top: `${newTop}%` };
       })
     );
   };
