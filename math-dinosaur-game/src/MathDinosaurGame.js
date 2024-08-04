@@ -157,24 +157,22 @@ const MathDinosaurGame = () => {
   return (
     <div className="math-dinosaur-game">
       <h1 className="game-title">Dragon Math Game</h1>
-      <div className="game-area">
+      <div className="problem-container">
+        <div className="problem">{problem.problem} = ?</div>
+      </div>
+      <div className="balloons-container">
+        {balloons.map((balloon, index) => (
+          <Balloon
+            key={index}
+            number={balloon.number}
+            onClick={() => handleAnswer(balloon.number)}
+            style={{ left: balloon.left, top: balloon.top, backgroundColor: balloon.color }}
+          />
+        ))}
+      </div>
+      <div className="bottom-container">
         <TreasureChest title="Egg Nest" content={`${eggs} egg${eggs !== 1 ? 's' : ''}`} />
-        <div className="center-area">
-          <div className="problem-container">
-            <div className="problem">{problem.problem} = ?</div>
-          </div>
-          <img src={getDinosaurImage()} alt={gameState} className="dinosaur-image" />
-          <div className="balloons-container">
-          {balloons.map((balloon, index) => (
-              <Balloon
-                key={index}
-                number={balloon.number}
-                onClick={() => handleAnswer(balloon.number)}
-                style={{ left: balloon.left, top: balloon.top, backgroundColor: balloon.color }}
-              />
-            ))}
-          </div>
-        </div>
+        <button className="reset-button" onClick={resetGame}>Reset Game</button>
         <TreasureChest
           title="Rewards"
           content={`${rewards.length} dragon${rewards.length !== 1 ? 's' : ''}`}
@@ -191,7 +189,6 @@ const MathDinosaurGame = () => {
           </div>
         </div>
       )}
-      <button className="reset-button" onClick={resetGame}>Reset Game</button>
     </div>
   );
 };
