@@ -15,24 +15,24 @@ const generateMathProblem = () => {
 
   switch (operation) {
     case '+':
-      num1 = Math.floor(Math.random() * 10) + 1;
-      num2 = Math.floor(Math.random() * 10) + 1;
+      num1 = Math.floor(Math.random() * 9) + 1; // 1-9
+      num2 = Math.floor(Math.random() * 90) + 10; // 10-99
       result = num1 + num2;
       break;
     case '-':
-      num1 = Math.floor(Math.random() * 10) + 1;
-      num2 = Math.floor(Math.random() * num1) + 1;
+      num1 = Math.floor(Math.random() * 90) + 10; // 10-99
+      num2 = Math.floor(Math.random() * 9) + 1; // 1-9
       result = num1 - num2;
       break;
     case '*':
-      num1 = Math.floor(Math.random() * 5) + 1;
-      num2 = Math.floor(Math.random() * 5) + 1;
+      num1 = Math.floor(Math.random() * 9) + 1; // 1-9
+      num2 = Math.floor(Math.random() * 9) + 1; // 1-9
       result = num1 * num2;
       break;
     case '/':
-      num2 = Math.floor(Math.random() * 5) + 1;
-      result = Math.floor(Math.random() * 5) + 1;
-      num1 = num2 * result;
+      num2 = Math.floor(Math.random() * 9) + 1; // 1-9
+      result = Math.floor(Math.random() * 9) + 1; // 1-9
+      num1 = num2 * result; // This ensures the division always results in a whole number
       break;
   }
 
@@ -73,6 +73,20 @@ const generateBalloons = (correctAnswer) => {
   return balloons;
 };
 
+
+const GameOverModal = ({ show, onRestart }) => {
+  if (!show) return null;
+
+  return (
+    <div className="modal-overlay">
+      <div className="modal-content">
+        <h2>Game Over!</h2>
+        <p>Oh no! Your dinosaur eggs are all gone.</p>
+        <button onClick={onRestart}>Play Again</button>
+      </div>
+    </div>
+  );
+};
 
 const MathDinosaurGame = () => {
   const [problem, setProblem] = useState(generateMathProblem());
