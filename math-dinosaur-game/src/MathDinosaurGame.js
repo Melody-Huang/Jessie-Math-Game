@@ -176,7 +176,15 @@ const MathDinosaurGame = () => {
       <div className="problem-container">
         <div className="problem">{problem.problem} = ?</div>
       </div>
-      <div className="balloons-container">
+      <div
+        className="balloons-container"
+        style={{
+          backgroundImage: `url(${getDinosaurImage()})`,
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat',
+          backgroundSize: 'contain'
+        }}
+      >
         {balloons.map((balloon, index) => (
           <Balloon
             key={index}
