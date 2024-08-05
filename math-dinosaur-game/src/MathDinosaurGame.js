@@ -74,7 +74,7 @@ const generateBalloon = (containerWidth, containerHeight, balloonWidth, balloonH
   const top = Math.random() * (containerHeight - balloonHeight);
   const speed = 0.5 + Math.random() * 1.5;
   const direction = Math.random() < 0.5 ? -1 : 1;
-  const number = isCorrect ? correctAnswer : Math.floor(Math.random() * 20) + 1;
+  const number = isCorrect ? correctAnswer : Math.floor(Math.random() * 50) + 1;
   const color = `hsl(${Math.random() * 360}, 80%, 75%)`;
 
   return {
