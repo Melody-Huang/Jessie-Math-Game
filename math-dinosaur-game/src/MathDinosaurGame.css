@@ -23,24 +23,27 @@ html {
 
 .game-title {
   font-family: 'Fredoka One', cursive;
-  color: #FF6B6B;
-  font-size: 4vh;
+  color: #4CAF50;
+  font-size: 5vh;
   margin-bottom: 2vh;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .problem-container {
   background-color: rgba(255, 255, 255, 0.9);
-  border-radius: 15px;
-  padding: 2vh 3vh;
-  margin-bottom: 2vh;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border-radius: 20px;
+  padding: 3vh 4vh;
+  margin-bottom: 3vh;
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
 }
 
 .problem {
-  font-size: 3vh;
+  font-size: 4vh;
   color: #4A4A4A;
-  font-weight: bold;
+  font-family: 'Fredoka One', cursive;
+  text-align: center;
+  letter-spacing: 0.05em;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
 }
 
 .balloons-container {
@@ -109,6 +112,7 @@ html {
   0% {
     transform: translate(0, 0) rotate(-2deg);
   }
+
   100% {
     transform: translate(0, 10px) rotate(2deg);
   }
@@ -120,7 +124,9 @@ html {
   align-items: center;
   width: 100%;
   padding: 0 2vw;
+  margin-bottom: 2vh;
 }
+
 
 .treasure-chest {
   width: 8vw;
@@ -136,6 +142,7 @@ html {
   text-shadow: 1px 1px 1px #000;
   cursor: pointer;
   transition: transform 0.2s;
+  padding-bottom: 1vh;
 }
 
 .treasure-chest:hover {
@@ -148,6 +155,7 @@ html {
   background: rgba(0, 0, 0, 0.6);
   border-radius: 5px;
   font-family: 'Fredoka One', cursive;
+  font-size: 1.8vh;
 }
 
 .reset-button {
@@ -184,18 +192,29 @@ html {
 
 .modal-content {
   background-color: white;
-  padding: 20px;
-  border-radius: 10px;
-  max-width: 80%;
-  max-height: 80%;
+  padding: 30px;
+  border-radius: 15px;
+  width: 90%;
+  max-width: 500px;
+  /* Increased max-width */
+  height: 80vh;
+  max-height: 500px;
+  /* Increased max-height */
   overflow-y: auto;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .modal-content h2 {
   margin-top: 0;
+  margin-bottom: 20px;
   color: #4A4A4A;
   font-family: 'Fredoka One', cursive;
+  font-size: 2.5em;
+  /* Increased font size */
+  text-align: center;
 }
 
 .modal-content button {
@@ -204,14 +223,21 @@ html {
   background-color: #4CAF50;
   color: white;
   border: none;
-  border-radius: 5px;
+  border-radius: 10px;
   cursor: pointer;
   transition: background-color 0.3s;
   font-family: 'Fredoka One', cursive;
+  width: auto;
+  max-width: 100px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
+
 
 .modal-content button:hover {
   background-color: #45a049;
+  transform: scale(1.05);
 }
 
 .rewards-stickers,
@@ -224,15 +250,17 @@ html {
 
 .reward-sticker,
 .egg-sticker {
-  width: 50px;
-  height: 50px;
+  width: 100px;
+  /* Increased size */
+  height: 100px;
+  /* Increased size */
   object-fit: contain;
   transition: transform 0.2s ease;
 }
 
 .reward-sticker:hover,
 .egg-sticker:hover {
-  transform: scale(1.1);
+  transform: scale(1.05);
 }
 
 .graduating-dino,
@@ -261,11 +289,13 @@ html {
     left: 50%;
     transform: translate(-50%, -50%) scale(1);
   }
+
   50% {
     top: 75%;
     left: 75%;
     transform: translate(-50%, -50%) scale(1.2) rotate(180deg);
   }
+
   100% {
     top: 100%;
     left: 100%;
@@ -279,11 +309,13 @@ html {
     left: 0%;
     transform: translate(0%, -100%) scale(0.5);
   }
+
   50% {
     top: 75%;
     left: 25%;
     transform: translate(-50%, -50%) scale(0.8) rotate(180deg);
   }
+
   100% {
     top: 50%;
     left: 50%;
