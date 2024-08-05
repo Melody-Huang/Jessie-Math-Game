@@ -1,12 +1,42 @@
 import React, { useState, useEffect } from 'react';
 import './MathDinosaurGame.css';
 
-import eggImage from './images/egg.png';
-import hatchedImage from './images/hatched.png';
-import babyImage from './images/baby.png';
-import adultImage from './images/adult.png';
+// Import all dinosaur images
+import egg from './images/egg.png';
+import hatched from './images/hatched.png';
+import baby from './images/baby.png';
+import young from './images/young.png';
+import adult from './images/adult.png';
+
+import hatched2 from './images/hatched2.png';
+import baby2 from './images/baby2.png';
+import young2 from './images/young2.png';
+import adult2 from './images/adult2.png';
+
+import hatched3 from './images/hatched3.png';
+import baby3 from './images/baby3.png';
+import young3 from './images/young3.png';
+import adult3 from './images/adult3.png';
+
+import hatched4 from './images/hatched4.png';
+import baby4 from './images/baby4.png';
+import young4 from './images/young4.png';
+import adult4 from './images/adult4.png';
+
+import hatched5 from './images/hatched5.png';
+import baby5 from './images/baby5.png';
+import young5 from './images/young5.png';
+import adult5 from './images/adult5.png';
 
 const ANIMATION_DURATION = 2000;
+
+const dinosaurGroups = [
+  { hatched, baby, young, adult },
+  { hatched: hatched2, baby: baby2, young: young2, adult: adult2 },
+  { hatched: hatched3, baby: baby3, young: young3, adult: adult3 },
+  { hatched: hatched4, baby: baby4, young: young4, adult: adult4 },
+  { hatched: hatched5, baby: baby5, young: young5, adult: adult5 },
+];
 
 const generateMathProblem = () => {
   const operations = ['+', '-', '*', '/'];
@@ -42,10 +72,10 @@ const generateMathProblem = () => {
 const generateBalloon = (containerWidth, containerHeight, balloonWidth, balloonHeight, isCorrect, correctAnswer) => {
   const left = Math.random() * (containerWidth - balloonWidth);
   const top = Math.random() * (containerHeight - balloonHeight);
-  const speed = 0.5 + Math.random() * 1.5; // Slightly reduced max speed
+  const speed = 0.5 + Math.random() * 1.5;
   const direction = Math.random() < 0.5 ? -1 : 1;
   const number = isCorrect ? correctAnswer : Math.floor(Math.random() * 20) + 1;
-  const color = `hsl(${Math.random() * 360}, 80%, 75%)`; // Brighter colors
+  const color = `hsl(${Math.random() * 360}, 80%, 75%)`;
 
   return {
     left: `${left}%`,
@@ -60,8 +90,8 @@ const generateBalloon = (containerWidth, containerHeight, balloonWidth, balloonH
 const generateBalloons = (correctAnswer) => {
   const containerWidth = 100;
   const containerHeight = 100;
-  const balloonWidth = 12; // Increased width
-  const balloonHeight = 15; // Slightly taller than wide for oval shape
+  const balloonWidth = 12;
+  const balloonHeight = 15;
 
   const balloons = [];
   const correctIndex = Math.floor(Math.random() * 5);
@@ -73,21 +103,6 @@ const generateBalloons = (correctAnswer) => {
   return balloons;
 };
 
-
-const GameOverModal = ({ show, onRestart }) => {
-  if (!show) return null;
-
-  return (
-    <div className="modal-overlay">
-      <div className="modal-content">
-        <h2>Game Over!</h2>
-        <p>Oh no! Your dinosaur eggs are all gone.</p>
-        <button onClick={onRestart}>Play Again</button>
-      </div>
-    </div>
-  );
-};
-
 const MathDinosaurGame = () => {
   const [problem, setProblem] = useState(generateMathProblem());
   const [score, setScore] = useState(0);
@@ -95,16 +110,24 @@ const MathDinosaurGame = () => {
   const [eggs, setEggs] = useState(1);
   const [rewards, setRewards] = useState([]);
   const [balloons, setBalloons] = useState([]);
-  const [showRewards, setShowRewards] = useState(false);
+  const [showRewardsModal, setShowRewardsModal] = useState(false);
+  const [showEggsModal, setShowEggsModal] = useState(false);
   const [graduatingDino, setGraduatingDino] = useState(null);
   const [newEgg, setNewEgg] = useState(null);
+  const [currentDinoGroup, setCurrentDinoGroup] = useState(dinosaurGroups[0]);
 
   useEffect(() => {
-    generateNewProblem();
-    const intervalId = setInterval(updateBalloonPositions, 50); // Update positions every 50ms
+    startNewRound();
+    const intervalId = setInterval(updateBalloonPositions, 50);
     return () => clearInterval(intervalId);
   }, []);
 
+  const startNewRound = () => {
+    setCurrentDinoGroup(dinosaurGroups[Math.floor(Math.random() * dinosaurGroups.length)]);
+    setGameState('egg');
+    setScore(0);
+    generateNewProblem();
+  };
 
   const updateBalloonPositions = () => {
     setBalloons(prevBalloons =>
@@ -112,19 +135,16 @@ const MathDinosaurGame = () => {
         let newLeft = parseFloat(balloon.left) + (balloon.speed * balloon.direction * 0.1);
         let newTop = parseFloat(balloon.top);
 
-        // Bounce off the sides
-        if (newLeft < 0 || newLeft > 90) { // 90 is 100 - balloonSize
-          balloon.direction *= -1; // Reverse direction
+        if (newLeft < 0 || newLeft > 90) {
+          balloon.direction *= -1;
           newLeft = Math.max(0, Math.min(newLeft, 90));
         }
 
-        // Bounce off the top and bottom
         if (newTop < 0 || newTop > 90) {
-          balloon.verticalDirection = (balloon.verticalDirection || 1) * -1; // Reverse vertical direction
+          balloon.verticalDirection = (balloon.verticalDirection || 1) * -1;
           newTop = Math.max(0, Math.min(newTop, 90));
         }
 
-        // Add slight vertical movement
         newTop += balloon.verticalDirection * 0.05;
 
         return { ...balloon, left: `${newLeft}%`, top: `${newTop}%` };
@@ -148,19 +168,21 @@ const MathDinosaurGame = () => {
         setGameState('baby');
         setScore(0);
       } else if (gameState === 'baby' && score + 1 >= 3) {
+        setGameState('young');
+        setScore(0);
+      } else if (gameState === 'young' && score + 1 >= 3) {
         setGameState('adult');
         setScore(0);
       } else if (gameState === 'adult' && score + 1 >= 3) {
         setGraduatingDino({ top: '50%', left: '50%' });
         setTimeout(() => {
-          setRewards(prev => [...prev, 'adult']);
+          setRewards(prev => [...prev, currentDinoGroup.adult]);
           setGraduatingDino(null);
           setNewEgg({ top: '100%', left: '50%' });
           setTimeout(() => {
             setNewEgg(null);
             setEggs(prev => prev + 1);
-            setGameState('egg');
-            setScore(0);
+            startNewRound();
           }, ANIMATION_DURATION);
         }, ANIMATION_DURATION);
       }
@@ -179,21 +201,28 @@ const MathDinosaurGame = () => {
   };
 
   const resetGame = () => {
-    setScore(0);
     setEggs(1);
     setRewards([]);
-    setGameState('egg');
-    generateNewProblem();
+    startNewRound();
   };
 
   const getDinosaurImage = () => {
     switch (gameState) {
-      case 'egg': return eggImage;
-      case 'hatched': return hatchedImage;
-      case 'baby': return babyImage;
-      case 'adult': return adultImage;
-      default: return eggImage;
+      case 'egg': return egg;
+      case 'hatched': return currentDinoGroup.hatched;
+      case 'baby': return currentDinoGroup.baby;
+      case 'young': return currentDinoGroup.young;
+      case 'adult': return currentDinoGroup.adult;
+      default: return egg;
     }
+  };
+
+  const toggleRewardsModal = () => {
+    setShowRewardsModal(!showRewardsModal);
+  };
+
+  const toggleEggsModal = () => {
+    setShowEggsModal(!showEggsModal);
   };
 
   return (
@@ -223,7 +252,7 @@ const MathDinosaurGame = () => {
           <div
             className="graduating-dino"
             style={{
-              backgroundImage: `url(${adultImage})`,
+              backgroundImage: `url(${currentDinoGroup.adult})`,
               top: graduatingDino.top,
               left: graduatingDino.left
             }}
@@ -233,7 +262,7 @@ const MathDinosaurGame = () => {
           <div
             className="new-egg"
             style={{
-              backgroundImage: `url(${eggImage})`,
+              backgroundImage: `url(${egg})`,
               top: newEgg.top,
               left: newEgg.left
             }}
@@ -241,31 +270,37 @@ const MathDinosaurGame = () => {
         )}
       </div>
       <div className="bottom-container">
-        <div className="treasure-chest nest-chest">
+        <div className="treasure-chest nest-chest" onClick={toggleEggsModal}>
           <h3>Egg Nest</h3>
           <p>{eggs} egg{eggs !== 1 ? 's' : ''}</p>
         </div>
         <button className="reset-button" onClick={resetGame}>Reset Game</button>
-        <div className="treasure-chest rewards-chest">
+        <div className="treasure-chest rewards-chest" onClick={toggleRewardsModal}>
           <h3>Rewards</h3>
           <p>{rewards.length} dragon{rewards.length !== 1 ? 's' : ''}</p>
         </div>
       </div>
-      {showRewards && (
-        <div className="rewards-window">
-          <h3>Collected Dragons</h3>
+      {showRewardsModal && (
+        <Modal title="Collected Dragons" onClose={toggleRewardsModal}>
           <div className="rewards-stickers">
-            {rewards.map((reward, index) => (
-              <img key={index} src={adultImage} alt="Adult Dragon" className="reward-sticker" />
+            {rewards.map((rewardImage, index) => (
+              <img key={index} src={rewardImage} alt="Adult Dragon" className="reward-sticker" />
             ))}
           </div>
-        </div>
+        </Modal>
+      )}
+      {showEggsModal && (
+        <Modal title="Egg Collection" onClose={toggleEggsModal}>
+          <div className="egg-collection">
+            {[...Array(eggs)].map((_, index) => (
+              <img key={index} src={egg} alt="Dragon Egg" className="egg-sticker" />
+            ))}
+          </div>
+        </Modal>
       )}
     </div>
   );
 };
-
-export default MathDinosaurGame;
 
 const Balloon = ({ number, onClick, style }) => (
   <div
@@ -287,9 +322,14 @@ const Balloon = ({ number, onClick, style }) => (
   </div>
 );
 
-const TreasureChest = ({ title, content }) => (
-  <div className="treasure-chest">
-    <h3>{title}</h3>
-    <p>{content}</p>
+const Modal = ({ title, children, onClose }) => (
+  <div className="modal-overlay">
+    <div className="modal-content">
+      <h2>{title}</h2>
+      {children}
+      <button onClick={onClose}>Close</button>
+    </div>
   </div>
 );
+
+export default MathDinosaurGame;
